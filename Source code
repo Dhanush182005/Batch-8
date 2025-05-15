@@ -1,0 +1,38 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+
+data = {
+    'weather': [1, 2, 1, 3, 2, 1, 3, 2, 1, 3],        
+    'traffic_volume': [100, 200, 150, 300, 250, 180, 220, 270, 190, 310],
+    'hour': [8, 18, 7, 21, 15, 9, 20, 17, 8, 22],     
+    'is_accident': [0, 1, 0, 1, 1, 0, 1, 1, 0, 1]     
+}
+
+df = pd.DataFrame(data)
+
+X = df[['weather', 'traffic_volume', 'hour']]
+y = df['is_accident']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+plt.scatter(df['traffic_volume'], df['hour'], c=df['is_accident'], cmap='coolwarm')
+plt.xlabel('Traffic Volume')
+plt.ylabel('Hour of Day')
+plt.title('Traffic Accidents Based on Time & Volume')
+plt.colorbar(label='Accident (1) / No Accident (0)')
+plt.show()
